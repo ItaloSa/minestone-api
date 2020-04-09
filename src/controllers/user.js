@@ -57,7 +57,8 @@ const update = (_id, data) => {
       options,
       filterObject(data, allowedFields),
       { new: true, useFindAndModify: false }
-    );
+    )
+    .select('-password');
 };
 
 const remove = (_id) => {
@@ -71,13 +72,24 @@ const remove = (_id) => {
       options,
       { active: false },
       { new: true, useFindAndModify: false }
-    );
-}
+    )
+    .select('-password');
+};
+
+const find = (filters={}) => {
+  return User.findOne({...filters, active: true}).lean();
+};
+
+const checkPassword = (user, password) => {
+  return bcrypt.compare(password, user.password);
+};
 
 module.exports = {
   create,
   getAll,
   get,
   update,
-  remove
+  remove,
+  checkPassword,
+  find
 }

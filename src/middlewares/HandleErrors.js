@@ -3,9 +3,15 @@ const CrudErrors = require('../helpers/CrudErrors');
 
 const { NODE_ENV } = process.env;
 
+const HandleAppErrors = ({ status, message, details={} }) => {
+  return { status, message, details };
+};
+
 const knownErrors = {
   MongoError: CrudErrors,
-  ValidationError: CrudErrors
+  ValidationError: CrudErrors,
+  AuthError: HandleAppErrors,
+  RequestError: HandleAppErrors
 };
 
 module.exports = (err, _, res, next) => {
