@@ -2,8 +2,9 @@ const { Router } = require('express');
 const router = Router();
 
 const userCtrl = require('../controllers/user');
+const authorize = require('../middlewares/Auth');
 
-router.post('/', async (req, res, next) => {
+router.post('/', authorize('admin'), async (req, res, next) => {
   try {
     res.json( await userCtrl.create(req.body));
   } catch (err) {
@@ -11,7 +12,7 @@ router.post('/', async (req, res, next) => {
   }
 });
 
-router.get('/', async (req, res, next) => {
+router.get('/', authorize('admin'), async (req, res, next) => {
   try {
     res.json( await userCtrl.getAll(req.query) );
   } catch (err) {
@@ -19,7 +20,7 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
+router.get('/:id', authorize('admin'), async (req, res, next) => {
   try {
     res.json( await userCtrl.get(req.params.id) );
   } catch (err) {
@@ -27,7 +28,7 @@ router.get('/:id', async (req, res, next) => {
   }
 });
 
-router.patch('/:id', async (req, res, next) => {
+router.patch('/:id', authorize('admin'), async (req, res, next) => {
   try {
     res.json( await userCtrl.update(req.params.id, req.body) );
   } catch (err) {
@@ -35,7 +36,7 @@ router.patch('/:id', async (req, res, next) => {
   }
 });
 
-router.delete('/:id', async (req, res, next) => {
+router.delete('/:id', authorize('admin'), async (req, res, next) => {
   try {
     res.json( await userCtrl.remove(req.params.id) );
   } catch (err) {

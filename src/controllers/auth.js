@@ -24,6 +24,20 @@ const createToken = (user) => {
   });
 };
 
+const checkCredentials = async (authorization, role) => {
+  const [ type, token ] = authorization.split(' ');
+  if (type.toLowerCase() !== 'bearer') throw new AuthError('Authorization must be the bearer type', 403);
+  const payload = await jsonwebtoken.verify(token, SECRET);
+  if (!payload) throw new AuthError('Must have a valid authorization', 403);
+  const user = await userCrtl.find({_id: payload.sub});
+  if (!user) throw new AuthError('Invalid user', 401);
+  if (role && !user.roles.includes(role)) {
+    throw new AuthError('Access Denied', 401);
+  }
+  return user;
+};
+
 module.exports = {
-  login
+  login,
+  checkCredentials
 };

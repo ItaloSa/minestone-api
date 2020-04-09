@@ -19,6 +19,8 @@ module.exports = (err, _, res, next) => {
     console.log('>> Debug:', err);
   }
 
+  next();
+
   const knownError = knownErrors[err.name];
   if (knownError) {
     const { status, message, details } = knownError(err);
@@ -28,5 +30,4 @@ module.exports = (err, _, res, next) => {
     res.status(status).json({ message, details });
   }
 
-  next();
 }

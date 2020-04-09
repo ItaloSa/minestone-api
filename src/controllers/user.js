@@ -7,6 +7,7 @@ const { paginate } = require('../helpers/paginate');
 const create = async (data) => {
   const user = User(data);
   user.password = await bcrypt.hash(user.password, 5);
+  user.roles.push('profile');
   await user.save();
   user.password = undefined;
   return user;
