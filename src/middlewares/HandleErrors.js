@@ -11,7 +11,8 @@ const knownErrors = {
   MongoError: CrudErrors,
   ValidationError: CrudErrors,
   AuthError: HandleAppErrors,
-  RequestError: HandleAppErrors
+  RequestError: HandleAppErrors,
+  CustomError: HandleAppErrors
 };
 
 module.exports = (err, _, res, next) => {

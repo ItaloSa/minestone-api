@@ -1,7 +1,7 @@
 const bcrypt = require('bcrypt');
 
 const User = require('../models/User');
-const { escapeStringRegexp, filterObject } = require('../helpers/functions');
+const { escapeStringRegexp } = require('../helpers/functions');
 const { paginate } = require('../helpers/paginate');
 
 const create = async (data) => {
@@ -43,23 +43,27 @@ const get = (_id) => {
     .lean();
 };
 
-const update = (_id, data) => {
-  const options = {
-    active: true,
-    _id
-  };
+const update = async (_id, data) => {
+  try {
+    const options = {
+      active: true,
+      _id
+    };
 
-  const allowedFields = [
-    'name', 'picture', 'email', 'password', 'roles'
-  ];
+    if (data.password) {
+      data.password = await bcrypt.hash(data.password, 5);
+    }
 
-  return User
-    .findOneAndUpdate(
-      options,
-      filterObject(data, allowedFields),
-      { new: true, useFindAndModify: false }
-    )
-    .select('-password');
+    return User
+      .findOneAndUpdate(
+        options,
+        data,
+        { new: true, useFindAndModify: false }
+      )
+      .select('-password');
+  } catch (err) {
+    throw err;
+  }
 };
 
 const remove = (_id) => {
