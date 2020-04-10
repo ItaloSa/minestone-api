@@ -13,11 +13,14 @@ const handleMongoErrors = (error) => {
 };
 
 const handleValidationErrors = (error) => {
-  const invalidFieldsNames = Object.getOwnPropertyNames(error.errors);
-  const invalidFields = invalidFieldsNames.reduce(
-    (prev, field) => ({...prev, [field]: error.errors[field].properties}),
-    {}
-  );
+  let invalidFields = error.errors;
+  if (!Array.isArray(error.errors)) {
+    const invalidFieldsNames = Object.getOwnPropertyNames(error.errors);
+    invalidFields = invalidFieldsNames.reduce(
+      (prev, field) => ([...prev, error.errors[field].properties.message]),
+      []
+    );
+  }
   return ErrorResponse.customMsg('Invalid request body', 400, invalidFields)
 };
 

@@ -3,10 +3,12 @@ const router = Router();
 
 const userCtrl = require('../controllers/user');
 const authorize = require('../middlewares/Auth');
+const UserRequest = require('../models/Requests/User');
 
 router.post('/', authorize('admin'), async (req, res, next) => {
   try {
-    res.json( await userCtrl.create(req.body));
+    const data = await UserRequest.validate(req.body);
+    res.json( await userCtrl.create(data));
   } catch (err) {
     next(err);
   }
