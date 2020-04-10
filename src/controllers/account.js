@@ -46,7 +46,7 @@ const verificationEmail = async (user) => {
     const variables = {
       preheader: 'Wellcome to base service',
       userName: user.name.split(' ')[0],
-      verifyUrl: `${BASE_URL}/account/verify/${token}`,
+      verifyUrl: `${HOME_PAGE_URL}/account/verify/${token}`,
       websiteUrl: HOME_PAGE_URL,
     };
     await mailService.send(template, mail, variables);
@@ -55,7 +55,7 @@ const verificationEmail = async (user) => {
   }
 };
 
-const verifyAccount = async (token) => {
+const verifyAccount = async ({token}) => {
   try {
     const payload = jsonwebtoken.verify(token, SIGNING_KEY);
     await userCtrl.update(payload.user, { verified: true });
@@ -72,10 +72,61 @@ const update = (user, data) => {
   return userCtrl.update(user._id, filterObject(data, allowedFields));
 };
 
+const resetPasswordRequest = async ({email}) => {
+  try {
+    const message = { message: 'Check your email' };
+    const user = await userCtrl.find({ email });
+    if (!user) return message;
+    await resetPasswordEmail(user);
+    return message;
+  } catch (err) {
+    throw err;
+  }
+};
+
+const resetPasswordEmail = async (user) => {
+  try {
+    const token = jsonwebtoken.sign(
+      { user: user._id },
+      SIGNING_KEY,
+      { expiresIn: '1h' }
+    );
+    const template = fs.readFileSync(
+      `${__dirname}/../services/mail/templates/resetPassword.html`, 'utf-8'
+    );
+    const mail = {
+      from: `"Base Service" <${EMAIL_USER}>`,
+      to: user.email,
+      subject: 'Reset your password'
+    };
+    const variables = {
+      preheader: 'You requested a password reset',
+      userName: user.name.split(' ')[0],
+      resetPassUrl: `${HOME_PAGE_URL}/account/reset/${token}`,
+      websiteUrl: HOME_PAGE_URL,
+    };
+    await mailService.send(template, mail, variables);
+  } catch (err) {
+    throw err;
+  }
+};
+
+const resetPassword = async ({token, password}) => {
+  try {
+    const payload = jsonwebtoken.verify(token, SIGNING_KEY);
+    await userCtrl.update(payload.user, { password });
+    return { message: 'Password changed' };
+  } catch (_) {
+    throw new CustomErros('Invalid reset password code', 400);
+  }
+};
+
 module.exports = {
   login,
   register,
   profile,
   verifyAccount,
-  update
+  update,
+  resetPasswordRequest,
+  resetPassword
 };
