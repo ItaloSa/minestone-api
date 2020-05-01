@@ -1,12 +1,12 @@
 const defaultMsg = () => {
   return {
-    message: 'Unknown Error',
+    code: 'UNKNOWN_ERROR',
     status: 500,
   }
 };
 
-const customMsg = (message, status, details={}) => {
-  return { message, status, details };
+const customMsg = (code, details={}, status) => {
+  return { code, details, status };
 };
 
 module.exports = {

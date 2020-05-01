@@ -6,9 +6,9 @@ const userCtrl = require('../controllers/user');
 const mailService = require('../services/mail');
 const CustomErros = require('../helpers/Errors/CustomError');
 const { filterObject } = require('../helpers/functions');
+const { ACCOUNT } = require('../helpers/constants');
 
 const {
-  BASE_URL,
   HOME_PAGE_URL,
   SIGNING_KEY,
   EMAIL_USER
@@ -61,7 +61,7 @@ const verifyAccount = async ({token}) => {
     await userCtrl.update(payload.user, { verified: true });
     return { message: 'Account verified' };
   } catch (_) {
-    throw new CustomErros('Invalid verification code', 400);
+    throw new CustomErros(ACCOUNT.INVALID_VERIFICATION_CODE);
   }
 };
 
@@ -117,7 +117,7 @@ const resetPassword = async ({token, password}) => {
     await userCtrl.update(payload.user, { password });
     return { message: 'Password changed' };
   } catch (_) {
-    throw new CustomErros('Invalid reset password code', 400);
+    throw new CustomErros(ACCOUNT.INVALID_RESET_PASSWORD_CODE);
   }
 };
 

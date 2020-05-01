@@ -1,10 +1,11 @@
 const ErrorResponse = require('./ErrorResponse');
+const { CRUD } = require('../helpers/constants');
 
 const handleMongoErrors = (error) => {
   let response = ErrorResponse.defaultMsg();
   switch(error.code) {
     case 11000:
-      response = ErrorResponse.customMsg('Duplicate item', 409);
+      response = ErrorResponse.customMsg(CRUD.DUPLICATE_ITEM);
       break;
     default:
       break;
@@ -21,7 +22,7 @@ const handleValidationErrors = (error) => {
       []
     );
   }
-  return ErrorResponse.customMsg('Invalid request body', 400, invalidFields)
+  return ErrorResponse.customMsg(CRUD.INVALID_REQUEST, invalidFields)
 };
 
 const handleErrors = (error) => {

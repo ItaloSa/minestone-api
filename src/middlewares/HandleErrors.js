@@ -3,8 +3,8 @@ const CrudErrors = require('../helpers/CrudErrors');
 
 const { NODE_ENV } = process.env;
 
-const HandleAppErrors = ({ status, message, details={} }) => {
-  return { status, message, details };
+const HandleAppErrors = ({ status, code, details={} }) => {
+  return { status, code, details };
 };
 
 const knownErrors = {
@@ -24,11 +24,11 @@ module.exports = (err, _, res, next) => {
 
   const knownError = knownErrors[err.name];
   if (knownError) {
-    const { status, message, details } = knownError(err);
-    res.status(status).json({ message, details });
+    const { status, code, details } = knownError(err);
+    res.status(status || 200).json({ error: { code, details }});
   } else {
-    const { status, message, details } = ErrorResponse.defaultMsg();
-    res.status(status).json({ message, details });
+    const { status, code, details } = ErrorResponse.defaultMsg();
+    res.status(status).json({ error: { code, details }});
   }
 
 }

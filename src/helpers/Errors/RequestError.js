@@ -1,7 +1,7 @@
 module.exports = class RequestError extends Error {
-  constructor(message, status) {
+  constructor(message, code) {
     super(message);
     this.name = 'RequestError';
-    this.status = status;
+    this.code = code;
   }
 };
