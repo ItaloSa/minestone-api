@@ -1,7 +1,8 @@
 module.exports = class AuthError extends Error {
-  constructor(message, code) {
-    super(message);
+  constructor(code, status) {
+    super(code);
     this.name = 'AuthError';
     this.code = code;
+    this.status = status;
   }
 };

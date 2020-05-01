@@ -26,16 +26,21 @@ const createToken = (user) => {
 };
 
 const checkCredentials = async (authorization, role) => {
-  const [type, token] = authorization.split(' ');
-  if (type.toLowerCase() !== 'bearer') throw new AuthError(AUTH.WRONG_AUTHORIZATION_TYPE, 403);
-  const payload = await jsonwebtoken.verify(token, SECRET);
-  if (!payload) throw new AuthError(AUTH.INVALID_AUTHORIZATION, 403);
-  const user = await userCrtl.find({ _id: payload.sub });
-  if (!user) throw new AuthError(AUTH.INVALID_USER, 401);
-  if (role && !user.roles.includes(role)) {
-    throw new AuthError(AUTH.ACCESS_DENIED, 401);
+  try {
+    const [type, token] = authorization.split(' ');
+    if (type.toLowerCase() !== 'bearer') throw new AuthError(AUTH.WRONG_AUTHORIZATION_TYPE, 403);
+    const payload = await jsonwebtoken.verify(token, SECRET);
+    if (!payload) throw new AuthError(AUTH.INVALID_AUTHORIZATION, 403);
+    const user = await userCrtl.find({ _id: payload.sub });
+    if (!user) throw new AuthError(AUTH.INVALID_USER, 401);
+    if (role && !user.roles.includes(role)) {
+      throw new AuthError(AUTH.ACCESS_DENIED, 401);
+    }
+    return user;
+  } catch (err) {
+    if (err instanceof AuthError) throw err;
+    throw new AuthError(AUTH.INVALID_AUTHORIZATION, 403);
   }
-  return user;
 };
 
 module.exports = {
