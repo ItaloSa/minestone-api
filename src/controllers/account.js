@@ -11,7 +11,9 @@ const { ACCOUNT } = require('../helpers/constants');
 const {
   HOME_PAGE_URL,
   SIGNING_KEY,
-  EMAIL_USER
+  EMAIL_USER,
+  RESET_PASS_URL,
+  RESET_VERIFY_ACC_URL
 } = process.env;
 
 const login = ({ email, password }) => authCtrl.login(email, password);
@@ -50,7 +52,7 @@ const verificationEmail = async (user) => {
     const variables = {
       preheader: 'Wellcome to base service',
       userName: user.name.split(' ')[0],
-      verifyUrl: `${HOME_PAGE_URL}/account/verify/${token}`,
+      verifyUrl: `${VERIFY_ACC_URL}${token}`,
       websiteUrl: HOME_PAGE_URL,
     };
     await mailService.send(template, mail, variables);
@@ -102,7 +104,7 @@ const resetPasswordEmail = async (user) => {
     const variables = {
       preheader: 'You requested a password reset',
       userName: user.name.split(' ')[0],
-      resetPassUrl: `${HOME_PAGE_URL}/account/reset/${token}`,
+      resetPassUrl: `${RESET_PASS_URL}${token}`,
       websiteUrl: HOME_PAGE_URL,
     };
     await mailService.send(template, mail, variables);
