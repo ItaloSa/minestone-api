@@ -28,13 +28,17 @@ const register = async (data) => {
   }
 };
 
+const genVerifToken = ({ payload, expiresIn = '1d' } = {}) => {
+  return jsonwebtoken.sign(
+    payload,
+    SIGNING_KEY,
+    { expiresIn }
+  );
+};
+
 const verificationEmail = async (user) => {
   try {
-    const token = jsonwebtoken.sign(
-      { user: user._id },
-      SIGNING_KEY,
-      { expiresIn: '1d' }
-    );
+    const token = genVerifToken({ payload: { user: user._id }, expiresIn: '1d' });
     const template = fs.readFileSync(
       `${__dirname}/../services/mail/templates/newAccount.html`, 'utf-8'
     );
@@ -55,7 +59,7 @@ const verificationEmail = async (user) => {
   }
 };
 
-const verifyAccount = async ({token}) => {
+const verifyAccount = async ({ token }) => {
   try {
     const payload = jsonwebtoken.verify(token, SIGNING_KEY);
     await userCtrl.update(payload.user, { verified: true });
@@ -72,7 +76,7 @@ const update = (user, data) => {
   return userCtrl.update(user._id, filterObject(data, allowedFields));
 };
 
-const resetPasswordRequest = async ({email}) => {
+const resetPasswordRequest = async ({ email }) => {
   try {
     const message = { message: 'Check your email' };
     const user = await userCtrl.find({ email });
@@ -86,11 +90,7 @@ const resetPasswordRequest = async ({email}) => {
 
 const resetPasswordEmail = async (user) => {
   try {
-    const token = jsonwebtoken.sign(
-      { user: user._id },
-      SIGNING_KEY,
-      { expiresIn: '1h' }
-    );
+    const token = genVerifToken({ payload: { user: user._id }, expiresIn: '1h' });
     const template = fs.readFileSync(
       `${__dirname}/../services/mail/templates/resetPassword.html`, 'utf-8'
     );
@@ -111,7 +111,7 @@ const resetPasswordEmail = async (user) => {
   }
 };
 
-const resetPassword = async ({token, password}) => {
+const resetPassword = async ({ token, password }) => {
   try {
     const payload = jsonwebtoken.verify(token, SIGNING_KEY);
     await userCtrl.update(payload.user, { password });
