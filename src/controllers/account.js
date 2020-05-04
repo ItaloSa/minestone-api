@@ -13,7 +13,7 @@ const {
   SIGNING_KEY,
   EMAIL_USER,
   RESET_PASS_URL,
-  RESET_VERIFY_ACC_URL
+  VERIFY_ACC_URL
 } = process.env;
 
 const login = ({ email, password }) => authCtrl.login(email, password);

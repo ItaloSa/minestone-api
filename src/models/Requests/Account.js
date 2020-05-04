@@ -8,6 +8,7 @@ const Login = yup.object().shape({
 const Register = yup.object().shape({
   name: yup.string().required('name is required'),
   email: yup.string().required('email is required'),
+  phoneNumber: yup.string(),
   password: yup.string().required('password is required'),
   picture: yup.string().url('picture must be a valid url')
 });
