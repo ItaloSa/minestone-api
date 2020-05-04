@@ -8,12 +8,13 @@ const create = async (data) => {
   const user = User(data);
   user.password = await bcrypt.hash(user.password, 5);
   user.roles.push('profile');
+  user.phoneNumber = data.phoneNumber ? data.phoneNumber.match(/\d+/g).join('') : '';
   await user.save();
   user.password = undefined;
   return user;
 };
 
-const getAll = ({ page=1, size=10, email='', name='' } = {}) => {
+const getAll = ({ page = 1, size = 10, email = '', name = '' } = {}) => {
   const options = {
     active: true,
     email: new RegExp(escapeStringRegexp(email), 'ig'),
@@ -28,7 +29,7 @@ const getAll = ({ page=1, size=10, email='', name='' } = {}) => {
     .select('-password')
     .lean();
 
-  return paginate(users, {page, size});
+  return paginate(users, { page, size });
 };
 
 const get = (_id) => {
@@ -52,6 +53,10 @@ const update = async (_id, data) => {
 
     if (data.password) {
       data.password = await bcrypt.hash(data.password, 5);
+    }
+
+    if (data.phoneNumber) {
+      data.phoneNumber = data.phoneNumber.match(/\d+/g).join('');
     }
 
     return User
@@ -81,8 +86,8 @@ const remove = (_id) => {
     .select('-password');
 };
 
-const find = (filters={}) => {
-  return User.findOne({...filters, active: true}).lean();
+const find = (filters = {}) => {
+  return User.findOne({ ...filters, active: true }).lean();
 };
 
 const checkPassword = (user, password) => {
