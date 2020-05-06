@@ -130,5 +130,6 @@ module.exports = {
   verifyAccount,
   update,
   resetPasswordRequest,
-  resetPassword
+  resetPassword,
+  genVerifToken
 };
