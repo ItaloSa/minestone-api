@@ -11,7 +11,8 @@ const login = async (email, password) => {
   if (!passwordMatch) throw new AuthError(AUTH.NOT_FOUND_OR_WRONG_PWD);
   await userCrtl.update(user._id, { lastLogin: new Date(), $inc: { loginCount: 1 } });
   const accessToken = await createToken(user);
-  return { user: `${user._id}`, accessToken, roles: user.roles.join(',') };
+  const { expiresIn } = jsonwebtoken.decode(accessToken);
+  return { user: `${user._id}`, accessToken, expiresIn, tokenType: 'Bearer', roles: user.roles.join(',') };
 };
 
 const createToken = (user) => {
