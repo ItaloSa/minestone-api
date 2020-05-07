@@ -73,7 +73,7 @@ const verifyAccount = async ({ token }) => {
 
 const update = (user, data) => {
   const allowedFields = [
-    'name', 'picture', 'email', 'password'
+    'name', 'picture', 'email', 'password', 'phoneNumber'
   ];
   return userCtrl.update(user._id, filterObject(data, allowedFields));
 };
