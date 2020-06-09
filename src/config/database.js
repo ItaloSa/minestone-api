@@ -8,5 +8,12 @@ module.exports = {
       const adapter = new FileSync(`${__dirname}/../../db.json`);
       this.dbInstance = low(adapter);
     }
+    return this.dbInstance;
+  },
+  setup() {
+    console.log('>> db setup');
+    const db = this.instance();
+    db.defaults({ users: [] })
+      .write()
   }
 };

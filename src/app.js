@@ -3,6 +3,9 @@ const cors = require('cors');
 
 const app = express();
 
+const database = require('./config/database');
+database.setup();
+
 const routes = require('./routes');
 const HandleErrors = require('./middlewares/HandleErrors');
 const NotFound = require('./middlewares/NotFound');
