@@ -1,19 +1,12 @@
-const mongoose = require('mongoose');
+const low = require('lowdb');
+const FileSync = require('lowdb/adapters/FileSync');
 
 module.exports = {
-  setup() {
-    mongoose.connect(
-      process.env.MONGODB_URI,
-      {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-      },
-      err => {
-        if (err) {
-          console.log(`>> db connection error: ${err.message}`);
-        }
-        console.log('>> db connection stablished');
-      }
-    );
+  dbInstance: null,
+  instance() {
+    if (!this.dbInstance) {
+      const adapter = new FileSync(`${__dirname}/../../db.json`);
+      this.dbInstance = low(adapter);
+    }
   }
 };

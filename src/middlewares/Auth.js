@@ -7,8 +7,7 @@ module.exports = (role) =>
     try {
       const authorization = req.headers.authorization;
       if (!authorization) throw new RequestError(AUTH.AUTHORIZATION_REQUIRED, 400);
-      const user = await AuthCtrl.checkCredentials(authorization, role);
-      req.user = user;
+      req.user = null;
       next();
     } catch (err) {
       next(err);
