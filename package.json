@@ -5,7 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev": "nodemon --inspect index"
+    "start:dev": "nodemon --inspect index",
+    "start": "pm2 start index.js --name minestone-api --log app.log",
+    "restart": "pm2 restart minestone-api",
+    "reload": "pm2 reload minestone-api",
+    "stop": "pm2 stop minestone-api",
+    "delete": "pm2 delete minestone-api"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "lowdb": "^1.0.0",
     "nodemailer": "^6.4.8",
+    "pm2": "^4.4.0",
     "rcon-client": "^4.2.0",
     "yup": "^0.28.3"
   },
