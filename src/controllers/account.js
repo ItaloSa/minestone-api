@@ -89,12 +89,13 @@ const confirmAccount = async (token) => {
 
     const rcon = await Rcon.instance();
     const response = await rcon.send(`whitelist add ${user.userName}`);
+    console.log(response)
 
-    if (!response.includes('already') || !response.includes('Added')) {
+    if (response.includes('already') || response.includes('Added')) {
+      return;
+    } else {
       throw new CustomError('RCON_ERR', 500);
     }
-
-    return;
 
   } catch (err) {
     throw err;
