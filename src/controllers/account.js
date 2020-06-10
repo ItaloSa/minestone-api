@@ -51,7 +51,7 @@ const register = async (data) => {
     await Email.send(template, {
       from: `"MineStone" <${EMAIL_USER}>`,
       to: newUser.email,
-      subject: 'Confirm your account'
+      subject: 'MineStone - Confirm your account'
     }, {
       player: newUser.userName,
       link: `${SERVICE_URL}/account/verify/${newUser.token}`
