@@ -28,7 +28,7 @@ const router = (app) => {
 
   app.get('/status', async (_, res, next) => {
     try {
-      res.json(status.serverStatus());
+      res.json(await status.serverStatus());
     } catch (err) {
       next(err);
     }
